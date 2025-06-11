@@ -161,5 +161,4 @@ resource "azurerm_key_vault_secret" "key_vault_vm_pw" {
 # }
 
 
-# terraform plan -target=azurerm_virtual_network.main -target=azurerm_resource_group.resource_group -target=azurerm_subnet.internal -target=azurerm_network_interface.main -target=azurerm_virtual_machine.main -target=azurerm_key_vault.password_vault -target=azurerm_key_vault_secret.key_vault_vm_pw -target=azurerm_public_ip.pub_ip -target=azurerm_security_center_subscription_pricing.vm_access -out vm.tfplan
-# terraform apply -var-file=tenant_id = "7fa81acc-2da6-4422-8a42-67d043484a34" vm.tfplan
+
