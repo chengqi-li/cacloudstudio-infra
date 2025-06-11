@@ -1,5 +1,5 @@
 variable "prefix" {}
 
-variable "tenant_id" {}
+variable "ten_id" {}
 
-variable "subscription_id" {}
+variable "sub_id" {}

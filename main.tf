@@ -1,6 +1,6 @@
 module "virtual-machine" {
-  source          = "./virtual-machine"
-  tenant_id       = var.tenant_id
-  subscription_id = var.subscription_id
-  prefix          = var.prefix
+  source = "./virtual-machine"
+  ten_id = var.tenant_id
+  sub_id = var.subscription_id
+  prefix = var.prefix
 }

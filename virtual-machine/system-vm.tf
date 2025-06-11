@@ -117,7 +117,7 @@ resource "azurerm_key_vault" "password_vault" {
   location            = azurerm_resource_group.resource_group.location
   resource_group_name = azurerm_resource_group.resource_group.name
   sku_name            = "standard"
-  tenant_id           = var.tenant_id
+  tenant_id           = var.ten_id
 
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
