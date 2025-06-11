@@ -1,0 +1,23 @@
+bin
+obj
+.idea
+
+# Local .terraform directories
+**/.terraform/*
+
+# Crash log files
+crash.log
+crash.*.log
+
+override.tfstate
+override.tf.json
+*_override.tf
+
+.terraformrc
+terraform.rc
+
+.terraform.lock.hcl
+
+__pycache__/
+
+secrets.tfvars
