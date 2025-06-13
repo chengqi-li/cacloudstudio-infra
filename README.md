@@ -1,1 +1,3 @@
 # cacloudstudio-infra
+
+export ARM_SUBSCRIPTION_ID="XXXXXXXXXXXXXXXXXXXXXX"
