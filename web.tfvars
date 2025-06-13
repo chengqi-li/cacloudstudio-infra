@@ -1,4 +1,5 @@
-kv_enabled = true
+kv_enabled      = true
+network_enabled = true
 azure_virtual_network = {
   web = {
     address_space = ["10.0.0.0/22"]

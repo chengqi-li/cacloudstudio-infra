@@ -6,6 +6,10 @@ variable "kv_enabled" {
   type = bool
 }
 
+variable "network_enabled" {
+  type = bool
+}
+
 variable "azure_key_vault" {
   description = "map of variables for azure key vault"
   type = map(
