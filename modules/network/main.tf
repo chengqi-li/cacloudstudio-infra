@@ -17,12 +17,12 @@ locals {
   subnets = merge([
     for vnet_key, vnet_value in var.azure_virtual_network : {
       for subnet_key, subnet_value in vnet_value.subnets :
-      "${vnet_key}-${subnet_key}" => {
-        vnet_key     = vnet_key
-        subnet_key   = subnet_key
-        vnet_value   = vnet_value
-        subnet_value = subnet_value
-      }
+        "${vnet_key}-${subnet_key}" => {
+          vnet_key     = vnet_key
+          subnet_key   = subnet_key
+          vnet_value   = vnet_value
+          subnet_value = subnet_value
+        }
     }
   ]...)
 }
@@ -35,18 +35,30 @@ resource "azurerm_subnet" "subnets" {
   address_prefixes     = each.value.subnet_value.address_prefixes
 }
 
-resource "azurerm_network_security_group" "nsg" {
-  for_each            = { for key, value in var.azure_network_security_group : key => value }
+resource "azurerm_network_security_group" "nsgs" {
+  for_each             = local.subnets
   name                = "${each.key}-network-security-group"
   location            = each.value.location
   resource_group_name = lookup(azurerm_resource_group.resource_group, each.key).name
 
   security_rule {
-    name                       = "DenyAll"
-    priority                   = 4096
+    name                       = "DenyAllOutbound"
+    priority                   = 4001
+    direction                  = "Outbound"
+    access                     = "Deny"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
+    name                       = "DenyAllInbound"
+    priority                   = 4000
     direction                  = "Inbound"
     access                     = "Deny"
-    protocol                   = "Tcp"
+    protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
     source_address_prefix      = "*"
@@ -54,7 +66,7 @@ resource "azurerm_network_security_group" "nsg" {
   }
 
   dynamic "security_rule" {
-    for_each = each.value.security_rule
+    for_each = each.value.subnet_value.security_rule
     content {
       name                       = security_rule.value.name
       description                = security_rule.value.description
@@ -69,3 +81,10 @@ resource "azurerm_network_security_group" "nsg" {
     }
   }
 }
+
+resource "azurerm_subnet_network_security_group_association" "subnets-nsgs" {
+  for_each                  = local.subnets
+  subnet_id                 = lookup(azurerm_subnet.subnets, each.key).id
+  network_security_group_id = lookup(azurerm_network_security_group.nsgs, each.key).id
+}
+
