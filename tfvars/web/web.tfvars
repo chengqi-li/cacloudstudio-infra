@@ -16,7 +16,7 @@ azure_virtual_network = {
     subnets = {
       default = {
         address_prefixes = ["10.0.1.0/24"]
-        security_rule = []
+        security_rule    = []
       }
     }
   }

@@ -17,12 +17,12 @@ locals {
   subnets = merge([
     for vnet_key, vnet_value in var.azure_virtual_network : {
       for subnet_key, subnet_value in vnet_value.subnets :
-        "${vnet_key}-${subnet_key}" => {
-          vnet_key     = vnet_key
-          subnet_key   = subnet_key
-          vnet_value   = vnet_value
-          subnet_value = subnet_value
-        }
+      "${vnet_key}-${subnet_key}" => {
+        vnet_key     = vnet_key
+        subnet_key   = subnet_key
+        vnet_value   = vnet_value
+        subnet_value = subnet_value
+      }
     }
   ]...)
 }
@@ -36,10 +36,10 @@ resource "azurerm_subnet" "subnets" {
 }
 
 resource "azurerm_network_security_group" "nsgs" {
-  for_each             = local.subnets
+  for_each            = local.subnets
   name                = "${each.key}-network-security-group"
-  location            = each.value.location
-  resource_group_name = lookup(azurerm_resource_group.resource_group, each.key).name
+  location            = each.value.vnet_value.location
+  resource_group_name = lookup(azurerm_resource_group.resource_group, each.value.vnet_key).name
 
   security_rule {
     name                       = "DenyAllOutbound"
