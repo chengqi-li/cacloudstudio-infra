@@ -7,3 +7,12 @@ module "key_vault" {
     azurerm = azurerm
   }
 }
+
+module "virtual_network" {
+  source                       = "./modules/network"
+  azure_virtual_network        = var.azure_virtual_network
+  azure_network_security_group = var.azure_network_security_group
+  providers = {
+    azurerm = azurerm
+  }
+}
