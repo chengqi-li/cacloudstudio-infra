@@ -21,7 +21,7 @@ resource "azurerm_public_ip" "public_ips" {
   resource_group_name = lookup(azurerm_resource_group.resource_group, each.value.key).name
   name                = "${each.value.name}-publicip"
   location            = each.value.value.location
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 
 }
 
