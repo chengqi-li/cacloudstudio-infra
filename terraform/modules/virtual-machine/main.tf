@@ -16,6 +16,15 @@ locals {
   ])
 }
 
+resource "azurerm_public_ip" "public_ips" {
+  for_each            = { for vm in local.vm_configs : vm.name => vm }
+  resource_group_name = lookup(azurerm_resource_group.resource_group, each.value.key).name
+  name                = "${each.value.name}-publicip"
+  location            = each.value.value.location
+  allocation_method   = "Dynamic"
+
+}
+
 resource "azurerm_network_interface" "network_interfaces" {
   for_each            = { for vm in local.vm_configs : vm.name => vm }
   name                = "${each.value.name}-nic"
@@ -26,6 +35,7 @@ resource "azurerm_network_interface" "network_interfaces" {
     name                          = "internal"
     subnet_id                     = lookup(var.subnets, "${each.value.key}-default").id
     private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = lookup(azurerm_public_ip.public_ips, each.key).id
   }
 }
 
