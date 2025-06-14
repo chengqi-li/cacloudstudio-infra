@@ -21,3 +21,11 @@ azure_virtual_network = {
     }
   }
 }
+
+vm_enabled = true
+
+azure_linux_virtual_machine = {
+  web = {
+    count = 1
+  }
+}

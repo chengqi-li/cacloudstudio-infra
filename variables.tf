@@ -51,3 +51,35 @@ variable "azure_virtual_network" {
       )
   }))
 }
+
+#############################
+# Virtual Machine variables #
+#############################
+variable "vm_enabled" {
+  type        = bool
+  description = "virtual machine module enabled or not"
+  default     = false
+}
+
+variable "azure_linux_virtual_machine" {
+  description = "map of variables for azure virtual machine"
+  type = map(
+    object({
+      location = optional(string, "westus")
+      size     = optional(string, "Standard_B1ls")
+      count    = optional(number, 0)
+
+      storage_image_reference_vars = optional(object({
+        publisher = optional(string, "Canonical")
+        offer     = optional(string, "0001-com-ubuntu-server-jammy")
+        sku       = optional(string, "22_04-lts")
+        version   = optional(string, "latest")
+        }), {
+        publisher = "Canonical"
+        offer     = "0001-com-ubuntu-server-jammy"
+        sku       = "22_04-lts"
+        version   = "latest"
+      })
+    })
+  )
+}
