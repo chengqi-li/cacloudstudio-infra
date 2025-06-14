@@ -1,5 +1,5 @@
 output "virtualnetworks" {
-  value = azurerm_virtual_network.main
+  value = azurerm_virtual_network.virtualnetworks
 }
 
 output "subnets" {

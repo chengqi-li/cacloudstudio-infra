@@ -23,3 +23,7 @@ terraform plan -var-file=FILENAME.tfvars -out=FILENAME.tfplan
 ```bash
 terraform apply FILENAME.tfplan
 ```
+
+## Use Ansible to install softwares
+
+## Use ADO pipeline for CI/CD
