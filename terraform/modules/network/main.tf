@@ -4,7 +4,7 @@ resource "azurerm_resource_group" "resource_group" {
   location = each.value.location
 }
 
-resource "azurerm_virtual_network" "main" {
+resource "azurerm_virtual_network" "virtualnetworks" {
   for_each            = { for key, value in var.azure_virtual_network : key => value }
   name                = "${each.key}-virtualnetwork"
   resource_group_name = lookup(azurerm_resource_group.resource_group, each.key).name
@@ -31,7 +31,7 @@ resource "azurerm_subnet" "subnets" {
   for_each             = local.subnets
   name                 = each.key
   resource_group_name  = lookup(azurerm_resource_group.resource_group, each.value.vnet_key).name
-  virtual_network_name = lookup(azurerm_virtual_network.main, each.value.vnet_key).name
+  virtual_network_name = lookup(azurerm_virtual_network.virtualnetworks, each.value.vnet_key).name
   address_prefixes     = each.value.subnet_value.address_prefixes
 }
 
