@@ -45,6 +45,8 @@ resource "azurerm_linux_virtual_machine" "main" {
   admin_password        = lookup(random_password.vm_pw, each.value.name).result
   size                  = each.value.value.size
 
+  disable_password_authentication = false
+
   source_image_reference {
     publisher = each.value.value.storage_image_reference_vars.publisher
     offer     = each.value.value.storage_image_reference_vars.offer
