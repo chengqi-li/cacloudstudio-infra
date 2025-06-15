@@ -41,30 +41,6 @@ resource "azurerm_network_security_group" "nsgs" {
   location            = each.value.vnet_value.location
   resource_group_name = lookup(azurerm_resource_group.resource_group, each.value.vnet_key).name
 
-  security_rule {
-    name                       = "DenyAllOutbound"
-    priority                   = 4001
-    direction                  = "Outbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
-  security_rule {
-    name                       = "DenyAllInbound"
-    priority                   = 4000
-    direction                  = "Inbound"
-    access                     = "Deny"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "*"
-  }
-
   dynamic "security_rule" {
     for_each = each.value.subnet_value.security_rule
     content {

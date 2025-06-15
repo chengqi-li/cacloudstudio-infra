@@ -26,4 +26,8 @@ terraform apply FILENAME.tfplan
 
 ## Use Ansible to install softwares
 
+## Use Docker to build image
+
+## Use Helm to deploy kubernetes service
+
 ## Use ADO pipeline for CI/CD

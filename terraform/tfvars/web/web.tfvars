@@ -16,7 +16,17 @@ azure_virtual_network = {
     subnets = {
       default = {
         address_prefixes = ["10.0.1.0/24"]
-        security_rule    = []
+        security_rule    = [{
+          name                       = "AllowSSHInbound" 
+          priority                   = 100
+          direction                  = "Inbound"
+          access                     = "Allow"
+          protocol                   = "Tcp"
+          source_port_range          = "*"
+          destination_port_range     = "22"
+          source_address_prefix      = "73.162.251.158/32"
+          destination_address_prefix = "*"
+        }]
       }
     }
   }
