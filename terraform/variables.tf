@@ -66,7 +66,7 @@ variable "azure_linux_virtual_machine" {
   type = map(
     object({
       location = optional(string, "westus")
-      size     = optional(string, "Standard_B2als_v2")
+      size     = optional(string, "Standard_B2s")
       count    = optional(number, 0)
 
       storage_image_reference_vars = optional(object({
