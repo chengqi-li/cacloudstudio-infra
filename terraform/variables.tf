@@ -66,7 +66,11 @@ variable "azure_linux_virtual_machine" {
   type = map(
     object({
       location = optional(string, "westus")
-      size     = optional(string, "Standard_B2als_v2")
+<<<<<<< HEAD
+      size     = optional(string, "Standard_B2s")
+=======
+      size     = optional(string, "Standard_B1ls")
+>>>>>>> parent of 699aed3 (Change default vm size to larger size in web.tfvars file)
       count    = optional(number, 0)
 
       storage_image_reference_vars = optional(object({
