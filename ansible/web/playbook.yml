@@ -1,0 +1,9 @@
+---
+- name: Deploy React App on Azure VM with NGINX and HTTPS
+  hosts: web
+  become: true
+  roles:
+    - node
+    - app
+    - nginx
+    - certbot

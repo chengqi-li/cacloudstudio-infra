@@ -26,6 +26,20 @@ terraform apply FILENAME.tfplan
 
 ## Use Ansible to install softwares
 
+1. Configure environment variable containing the appropriate subscription_id variables to be used.
+```bash
+export AZURE_VM_IP="XXX.XXX.XXX.XXX"
+export AZURE_VM_PASSWORD="XXXXXXXXXXXX"
+export PYTHON_PATH="/usr/local/bin/python3"
+export DOMAIN="cacloudstudio.com"
+export EMAIL="anna.xing@cacloudstudio.com"
+```
+
+2. Run Ansible playbook
+```bash
+ansible-playbook playbook.yml -i inventory.ini --extra-vars "domain=$DOMAIN email=$EMAIL"
+```
+
 ## Use Docker to build image
 
 ## Use Helm to deploy kubernetes service
