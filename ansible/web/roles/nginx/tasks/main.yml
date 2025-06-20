@@ -6,13 +6,13 @@
 - name: Configure nginx site
   template:
     src: nginx.conf.j2
-    dest: /etc/nginx/sites-available/cacloudstudio
+    dest: /etc/nginx/sites-available/cacloudstudio-web
   notify: Reload NGINX
 
 - name: Enable nginx site
   file:
-    src: /etc/nginx/sites-available/cacloudstudio
-    dest: /etc/nginx/sites-enabled/cacloudstudio
+    src: /etc/nginx/sites-available/cacloudstudio-web
+    dest: /etc/nginx/sites-enabled/cacloudstudio-web
     state: link
     force: true
 

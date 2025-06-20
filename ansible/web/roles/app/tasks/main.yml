@@ -7,19 +7,19 @@
 - name: Clone app repository
   git:
     repo: https://github.com/AXCaCloudStudio/cacloudstudio-web.git
-    dest: /opt/cacloudstudio
+    dest: /opt/cacloudstudio-web
     version: main
     force: yes
 
 - name: Install dependencies
   shell: npm install
   args:
-    chdir: /opt/cacloudstudio
+    chdir: /opt/cacloudstudio-web
 
 - name: Build React app
   shell: npm run build
   args:
-    chdir: /opt/cacloudstudio
+    chdir: /opt/cacloudstudio-web
 
 - name: Install serve globally
   npm:
@@ -31,11 +31,11 @@
     dest: /etc/systemd/system/react.service
     content: |
       [Unit]
-      Description=React App
+      Description=Web App
       After=network.target
 
       [Service]
-      ExecStart=/usr/bin/serve -s /opt/cacloudstudio/build -l 3000
+      ExecStart=/usr/bin/serve -s /opt/cacloudstudio-web/build -l 3000
       Restart=always
       User=adminuser
       Environment=PORT=3000
