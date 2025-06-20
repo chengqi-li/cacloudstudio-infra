@@ -1,0 +1,50 @@
+- name: Ensure git is installed
+  apt:
+    name: git
+    state: present
+    update_cache: yes
+
+- name: Clone app repository
+  git:
+    repo: https://github.com/AXCaCloudStudio/cacloudstudio-web.git
+    dest: /opt/cacloudstudio-web
+    version: main
+    force: yes
+
+- name: Install dependencies
+  shell: npm install
+  args:
+    chdir: /opt/cacloudstudio-web
+
+- name: Build React app
+  shell: npm run build
+  args:
+    chdir: /opt/cacloudstudio-web
+
+- name: Install serve globally
+  npm:
+    name: serve
+    global: yes
+
+- name: Create systemd service
+  copy:
+    dest: /etc/systemd/system/react.service
+    content: |
+      [Unit]
+      Description=Web App
+      After=network.target
+
+      [Service]
+      ExecStart=/usr/bin/serve -s /opt/cacloudstudio-web/build -l 3000
+      Restart=always
+      User=adminuser
+      Environment=PORT=3000
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Enable and start service
+  systemd:
+    name: react.service
+    enabled: yes
+    state: started
