@@ -1,0 +1,7 @@
+webserver:
+  hosts:
+    web:
+      ansible_host: "{{ lookup('env', 'AZURE_VM_IP') }}"
+      ansible_user: "{{ lookup('env','AZURE_VM_ADMINUSER') }}"
+      ansible_ssh_pass: "{{ lookup('env','AZURE_VM_PASSWORD') }}"
+      ansible_python_interpreter: "{{ lookup('env','PYTHON_PATH') }}"
