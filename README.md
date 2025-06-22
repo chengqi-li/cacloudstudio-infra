@@ -30,14 +30,20 @@ terraform apply FILENAME.tfplan
 ```bash
 export AZURE_VM_IP="XXX.XXX.XXX.XXX"
 export AZURE_VM_PASSWORD="XXXXXXXXXXXX"
-export PYTHON_PATH="/usr/local/bin/python3"
+export AZURE_VM_ADMINUSER="adminuser"
+export PYTHON_PATH="/usr/bin/python3"
 export DOMAIN="cacloudstudio.com"
 export EMAIL="anna.xing@cacloudstudio.com"
 ```
 
-2. Run Ansible playbook
+2. Install sshpass program (required for ssh connection type with password)
 ```bash
-ansible-playbook playbook.yml -i inventory.ini --extra-vars "domain=$DOMAIN email=$EMAIL"
+brew install sshpass
+```
+
+3. Run Ansible playbook
+```bash
+ansible-playbook playbook.yml -i inventory.yaml --extra-vars "domain=$DOMAIN email=$EMAIL"
 ```
 
 ## Use Docker to build image
