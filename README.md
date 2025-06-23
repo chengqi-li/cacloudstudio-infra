@@ -29,7 +29,7 @@ terraform apply FILENAME.tfplan
 1. Configure environment variable containing the appropriate subscription_id variables to be used.
 ```bash
 export AZURE_VM_IP="XXX.XXX.XXX.XXX"
-export AZURE_VM_PASSWORD="XXXXXXXXXXXX"
+export AZURE_VM_PASSWORD='XXXXXXXXXXXX' # Use of single quotes here is important because there is potential of password containing $, which will cause errors in shell if using "" instead of ''
 export AZURE_VM_ADMINUSER="adminuser"
 export PYTHON_PATH="/usr/bin/python3"
 export DOMAIN="cacloudstudio.com"
