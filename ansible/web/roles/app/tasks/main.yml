@@ -14,12 +14,12 @@
 - name: Install dependencies
   shell: npm install
   args:
-    chdir: /opt/cacloudstudio-web
+    chdir: /opt/cacloudstudio-web/frontend
 
 - name: Build React app
   shell: npm run build
   args:
-    chdir: /opt/cacloudstudio-web
+    chdir: /opt/cacloudstudio-web/frontend
 
 - name: Install serve globally
   npm:
@@ -35,7 +35,7 @@
       After=network.target
 
       [Service]
-      ExecStart=/usr/bin/serve -s /opt/cacloudstudio-web/build -l 3000
+      ExecStart=/usr/bin/serve -s /opt/cacloudstudio-web/frontend/build -l 3000
       Restart=always
       User=adminuser
       Environment=PORT=3000
