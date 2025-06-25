@@ -46,6 +46,28 @@ brew install sshpass
 ansible-playbook playbook.yml -i inventory.yaml --extra-vars "domain=$DOMAIN email=$EMAIL"
 ```
 
+## How to Setup Terraform Cloud in ADO pipeline
+1. Create a workspace in your Terraform account. Select CLI-Driven workflow.
+
+2. Use command terraform login to authenticate into HCP Terraform (or follow instructions for credential block on the workspace website). You will be prompted to create a token and store it.
+```bash
+terraform login
+```
+
+3. After authentication, add this code block into the Terraform configuration files.
+```bash
+terraform { 
+  cloud { 
+    
+    organization = "CaCloudStudio" 
+
+    workspaces { 
+      name = "Infra" 
+    } 
+  } 
+}
+```
+
 ## Use Docker to build image
 
 ## Use Helm to deploy kubernetes service
