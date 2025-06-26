@@ -38,6 +38,5 @@ vm_enabled = true
 azure_linux_virtual_machine = {
   ado = {
     count = 1
-    size  = "Standard_B2pts_v2"
   }
 }
