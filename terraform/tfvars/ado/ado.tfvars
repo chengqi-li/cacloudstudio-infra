@@ -12,10 +12,10 @@ network_enabled = true
 
 azure_virtual_network = {
   ado = {
-    address_space = ["10.0.0.0/22"]
+    address_space = ["10.10.0.0/22"]
     subnets = {
       default = {
-        address_prefixes = ["10.0.1.0/24"]
+        address_prefixes = ["10.10.1.0/24"]
         security_rule = [{
           name                       = "AllowSSHInbound"
           priority                   = 100
@@ -24,7 +24,7 @@ azure_virtual_network = {
           protocol                   = "Tcp"
           source_port_range          = "*"
           destination_port_range     = "22"
-          source_address_prefix      = "73.162.251.158/32"
+          source_address_prefix      = "*"
           destination_address_prefix = "*"
           }
         ]
