@@ -1,0 +1,8 @@
+adoagents:
+  hosts:
+    ado:
+      ansible_host: "{{ lookup('env', 'AZURE_VM_IP') }}"
+      ansible_user: "{{ lookup('env','AZURE_VM_ADMINUSER') }}"
+      ansible_ssh_pass: "{{ lookup('env','AZURE_VM_PASSWORD') }}"      
+      ansible_connection: ssh
+      ansible_ssh_common_args: '-o StrictHostKeyChecking=no'

@@ -1,0 +1,47 @@
+- name: Ensure dependencies are installed
+  apt:
+    name: [curl, tar]
+    state: present
+    update_cache: true
+
+- name: Create agent directory
+  file:
+    path: "{{ ado_agent_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Download Azure DevOps agent package
+  get_url:
+    url: "https://vstsagentpackage.azureedge.net/agent/{{ ado_agent_version }}/vsts-agent-linux-x64-{{ ado_agent_version }}.tar.gz"
+    dest: "{{ ado_agent_dir }}/agent.tar.gz"
+
+- name: Extract agent package
+  unarchive:
+    src: "{{ ado_agent_dir }}/agent.tar.gz"
+    dest: "{{ ado_agent_dir }}"
+    remote_src: yes
+
+- name: Configure the agent
+  shell: |
+    ./config.sh --unattended \
+      --url {{ ado_org_url }} \
+      --auth pat \
+      --token {{ ado_pat }} \
+      --pool {{ ado_agent_pool }} \
+      --agent $(hostname) \
+      --acceptTeeEula \
+      --replace
+  args:
+    chdir: "{{ ado_agent_dir }}"
+  environment:
+    VSTS_AGENT_INPUT_TOKEN: "{{ ado_pat }}"
+
+- name: Install agent as service
+  shell: ./svc.sh install
+  args:
+    chdir: "{{ ado_agent_dir }}"
+
+- name: Start agent service
+  shell: ./svc.sh start
+  args:
+    chdir: "{{ ado_agent_dir }}"
