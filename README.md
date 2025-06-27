@@ -24,7 +24,7 @@ terraform plan -var-file=FILENAME.tfvars -out=FILENAME.tfplan
 terraform apply FILENAME.tfplan
 ```
 
-## Use Ansible to install softwares
+## Use Ansible to install virtual machine for web service
 
 1. Configure environment variable containing the appropriate subscription_id variables to be used.
 ```bash
@@ -43,7 +43,29 @@ brew install sshpass
 
 3. Run Ansible playbook
 ```bash
+cd ansible/web
 ansible-playbook playbook.yml -i inventory.yaml --extra-vars "domain=$DOMAIN email=$EMAIL"
+```
+
+## Use Ansible to install virtual machine for ado self hosted agents
+1. Configure environment variable containing the appropriate subscription_id variables to be used.
+```bash
+export AZURE_VM_IP="XXX.XXX.XXX.XXX"
+export AZURE_VM_PASSWORD='XXXXXXXXXXXX' # Use of single quotes here is important because there is potential of password containing $, which will cause errors in shell if using "" instead of ''
+export AZURE_VM_ADMINUSER="adminuser"
+export PYTHON_PATH="/usr/bin/python3"
+export ADO_PAT="XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+```
+
+2. Install sshpass program (required for ssh connection type with password)
+```bash
+brew install sshpass
+```
+
+3. Run Ansible playbook
+```bash
+cd ansible/ado
+ansible-playbook playbook.yml -i inventory.yaml
 ```
 
 ## How to Setup Terraform Cloud in ADO pipeline
