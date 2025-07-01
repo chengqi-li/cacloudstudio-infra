@@ -6,97 +6,52 @@
 # https://aka.ms/yaml
 
 trigger:
-  - main
+- main 
 
 variables:
   TF_CLOUD_ORGANIZATION: CaCloudStudio
   TF_WORKSPACE: Infra
-  TF_DIR: terraform
-  ANSIBLE_DIR: ansible
-  PLAYBOOK: playbook.yml
+  TF_DIR: /terraform
 
 stages:
-  - stage: CloneInfraRepo
-    displayName: "Clone Infrastructure Repo"
-    jobs:
-      - job: CloneInfra
-        displayName: "Clone Infra Repo"
-        pool:
-          vmImage: "ubuntu-latest"
-        steps:
-          - checkout: self
+- stage: Terraform
+  jobs:
+  - job: TerraformCI
+    displayName: 'Terraform Plan and Apply'
+    pool:
+      vmImage: 'ubuntu-latest'
 
-          - script: |
-              echo "Repository checked out successfully."
-              echo "DEBUG 100"
-            displayName: "Success Message"
+    steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
 
-  - stage: Terraform
-    jobs:
-      - job: TerraformCI
-        displayName: "Terraform Plan and Apply"
-        pool:
-          vmImage: "ubuntu-latest"
+    - script: |
+        curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+        apt-get update && apt-get install terraform -y
+      displayName: 'Install Terraform'
 
-        steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: "3.x"
+    - task: Bash@3
+      name: TerraformPlan
+      inputs:
+        targetType: 'inline'
+        script: |
+          echo "Setting up Terraform CLI for Terraform Cloud"
+          cd $(TF_DIR)
+          terraform init -backend-config="organization=$(TF_CLOUD_ORGANIZATION)" -backend-config="workspaces=name=$(TF_WORKSPACE)"
+          terraform plan -input=false
+      env:
+        TERRAFORM_TOKEN: $(TERRAFORM_TOKEN)
+      displayName: 'Terraform Plan'
 
-          - script: |
-              curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-              echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
-              apt-get update && apt-get install terraform -y
-            displayName: "Install Terraform"
-
-          - task: Bash@3
-            name: TerraformPlan
-            inputs:
-              targetType: "inline"
-              script: |
-                echo "Initializing Terraform with remote backend"
-                cd $(TF_DIR)
-                terraform init
-                terraform plan -input=false -out=tfplan
-            env:
-              TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
-            displayName: "Terraform Plan"
-
-          - task: Bash@3
-            name: TerraformApply
-            inputs:
-              targetType: "inline"
-              script: |
-                cd $(TF_DIR)
-                echo "Running Terraform Apply"
-                terraform apply -auto-approve tfplan
-            env:
-              TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
-            displayName: "Terraform Apply"
-
-  - stage: Ansible
-    jobs:
-      - job: AnsibleRun
-        displayName: "Run Ansible Playbook"
-        pool:
-          vmImage: "ubuntu-latest"
-        steps:
-          - checkout: self
-
-          - script: |
-              cd ..
-              sudo apt-get update
-              sudo apt-get install -y sshpass python3-pip
-              pip3 install ansible
-            displayName: "Install Ansible and sshpass"
-
-          - script: |
-              cd $(ANSIBLE_DIR)
-              export ANSIBLE_HOST_KEY_CHECKING=False
-              ansible-playbook -i inventory.yml playbook.yml
-            displayName: "Run Ansible Playbook"
-            env:
-              AZURE_VM_IP: $(AZURE_VM_IP)
-              AZURE_VM_ADMINUSER: $(AZURE_VM_ADMINUSER)
-              AZURE_VM_PASSWORD: $(AZURE_VM_PASSWORD)
-              PYTHON_PATH: $(PYTHON_PATH)
+    - task: Bash@3
+      name: TerraformApply
+      inputs:
+        targetType: 'inline'
+        script: |
+          echo "Running Terraform Apply"
+          terraform apply -auto-approve -input=false
+      env:
+        TERRAFORM_TOKEN: $(TERRAFORM_TOKEN)
+      displayName: 'Terraform Apply'
