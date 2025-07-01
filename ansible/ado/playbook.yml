@@ -1,0 +1,11 @@
+- name: Configure Azure DevOps Self-hosted Agent on VM
+  hosts: ado
+  become: true
+  vars:
+    ado_org_url: "https://dev.azure.com/cacloudstudio" 
+    ado_pat: "{{ lookup('env', 'ADO_PAT') }}"
+    ado_agent_pool: "CACloudStudioADO"
+    ado_agent_version: "3.236.1"
+    ado_agent_dir: "/opt/ado-agent"
+  roles:
+    - ado
