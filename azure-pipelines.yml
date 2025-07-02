@@ -52,7 +52,7 @@ stages:
               echo "Installing..."
               mkdir -p $HOME/bin
               mv terraform $HOME/bin/
-              echo 'export PATH=$HOME/bin:$PATH' >> $BASH_ENV
+              echo "##vso[task.prependpath]$HOME/bin"
               echo "Installed."
               terraform --version
             displayName: "Install Terraform"
