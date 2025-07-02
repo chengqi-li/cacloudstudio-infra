@@ -37,27 +37,22 @@ stages:
           vmImage: "ubuntu-latest"
 
         steps:
-          - script: |
-              echo "All contents here"
-              pwd
-              ls -al
-              ls terraform
-              echo "Downloading..."
-              curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
-              echo "Downloaded."
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: |
+                mkdir -p $HOME/bin
+                echo "Downloading..."
+                curl -fsSL https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
+                echo "Downloaded."
+                echo "Unzipping..."
+                unzip terraform.zip
+                echo "Unzipped."
 
-              ls -lh terraform.zip
-              file terraform.zip
-
-              echo "Unzipping..."
-              unzip -l terraform.zip
-              echo "Unzipped."
-
-              echo "Installing..."
-              mkdir -p $HOME/bin
-              mv terraform $HOME/bin/
-              echo "##vso[task.prependpath]$HOME/bin"
-              echo "Installed."
+                echo "Installing..."
+                mv terraform $HOME/bin/
+                echo "##vso[task.prependpath]$HOME/bin"
+                echo "Installed."
             displayName: "Install Terraform"
 
           - task: Bash@3
@@ -65,9 +60,12 @@ stages:
             inputs:
               targetType: "inline"
               script: |
+                cd $(Build.SourcesDirectory)
+                pwd
                 terraform --version
                 echo "Initializing Terraform with remote backend"
                 cd $(TF_DIR)
+                pwd
                 terraform init
             #     terraform plan -input=false -out=tfplan
             # env:
