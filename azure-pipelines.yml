@@ -14,21 +14,6 @@ variables:
   TF_DIR: terraform
 
 stages:
-  - stage: CloneInfraRepo
-    displayName: "Clone Infrastructure Repo"
-    jobs:
-      - job: CloneInfra
-        displayName: "Clone Infra Repo"
-        pool:
-          vmImage: "ubuntu-latest"
-        steps:
-          - checkout: self
-
-          - script: |
-              echo "Repository checked out successfully."
-              echo "DEBUG 100"
-              ls -al
-            displayName: "Success Message"
   - stage: Terraform
     jobs:
       - job: TerraformCI
@@ -37,6 +22,16 @@ stages:
           vmImage: "ubuntu-latest"
 
         steps:
+          - checkout: self
+
+          - script: |
+              echo "Branch: $(Build.SourceBranch)"
+              echo "Repo directory: $(Build.SourcesDirectory)"
+              ls -al $(Build.SourcesDirectory)
+              echo "---"
+              ls -al $(Build.SourcesDirectory)/terraform || echo "No terraform directory found"
+            displayName: "Check repo and terraform directory"
+
           - task: Bash@3
             inputs:
               targetType: "inline"
