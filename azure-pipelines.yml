@@ -37,14 +37,16 @@ stages:
           vmImage: "ubuntu-latest"
 
         steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: "3.x"
+          - script: |
+              curl -fsSL https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
+              unzip terraform.zip
+              mkdir -p $HOME/bin
+              mv terraform $HOME/bin/
+              echo 'export PATH=$HOME/bin:$PATH' >> $BASH_ENV
+              terraform --version
+            displayName: "Install Terraform"
 
           - script: |
-              echo "PATH=$PATH"
-              ls -l /usr/bin/terraform || echo "Terraform not in /usr/bin"
-              ls -l /usr/local/bin/terraform || echo "Terraform not in /usr/local/bin"
-              which terraform || echo "Terraform not found in PATH"
-              terraform -version || echo "terraform command failed"
-            displayName: "Debug Terraform Availability"
+              terraform init
+              terraform plan -input=false
+            displayName: "Run Terraform"
