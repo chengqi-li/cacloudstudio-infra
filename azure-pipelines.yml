@@ -66,7 +66,7 @@ stages:
                 pwd
                 terraform --version
                 echo "Initializing Terraform with remote backend"
-                cd $(TF_DIR)
+                cd $(Build.SourcesDirectory)/$(TF_DIR)
                 pwd
                 terraform init
             #     terraform plan -input=false -out=tfplan
