@@ -38,15 +38,31 @@ stages:
 
         steps:
           - script: |
-              curl -fsSL https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
+              echo "Downloading..."
+              curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
+              echo "Downloaded."
+
+              echo "Unzipping..."
               unzip terraform.zip
+              echo "Unzipped."
+
+              echo "Installing..."
               mkdir -p $HOME/bin
               mv terraform $HOME/bin/
               echo 'export PATH=$HOME/bin:$PATH' >> $BASH_ENV
+              echo "Installed."
               terraform --version
             displayName: "Install Terraform"
 
-          - script: |
-              terraform init
-              terraform plan -input=false
-            displayName: "Run Terraform"
+          # - task: Bash@3
+          #   name: TerraformPlan
+          #   inputs:
+          #     targetType: "inline"
+          #     script: |
+          #       echo "Initializing Terraform with remote backend"
+          #       cd $(TF_DIR)
+          #       terraform init
+          #       terraform plan -input=false -out=tfplan
+          #   env:
+          #     TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
+          #   displayName: "Terraform Plan"
