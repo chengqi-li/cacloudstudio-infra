@@ -54,18 +54,18 @@ stages:
               mv terraform $HOME/bin/
               echo "##vso[task.prependpath]$HOME/bin"
               echo "Installed."
-              terraform --version
             displayName: "Install Terraform"
 
-          # - task: Bash@3
-          #   name: TerraformPlan
-          #   inputs:
-          #     targetType: "inline"
-          #     script: |
-          #       echo "Initializing Terraform with remote backend"
-          #       cd $(TF_DIR)
-          #       terraform init
-          #       terraform plan -input=false -out=tfplan
-          #   env:
-          #     TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
-          #   displayName: "Terraform Plan"
+          - task: Bash@3
+            name: TerraformPlan
+            inputs:
+              targetType: "inline"
+              script: |
+                terraform --version
+                echo "Initializing Terraform with remote backend"
+                cd $(TF_DIR)
+                terraform init
+            #     terraform plan -input=false -out=tfplan
+            # env:
+            #   TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
+            displayName: "Terraform Plan"
