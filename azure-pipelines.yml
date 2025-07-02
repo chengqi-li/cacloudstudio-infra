@@ -8,16 +8,43 @@
 trigger:
   - main
 
+variables:
+  TF_CLOUD_ORGANIZATION: CaCloudStudio
+  TF_WORKSPACE: Infra
+  TF_DIR: terraform
+
 stages:
-  - stage: Init
+  - stage: CloneInfraRepo
+    displayName: "Clone Infrastructure Repo"
     jobs:
-      - job: Init
-        displayName: "Init"
+      - job: CloneInfra
+        displayName: "Clone Infra Repo"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - checkout: self
+
+          - script: |
+              echo "Repository checked out successfully."
+              echo "DEBUG 100"
+              ls -al
+            displayName: "Success Message"
+  - stage: Terraform
+    jobs:
+      - job: TerraformCI
+        displayName: "Terraform Plan and Apply"
         pool:
           vmImage: "ubuntu-latest"
 
         steps:
+          - task: UsePythonVersion@0
+            inputs:
+              versionSpec: "3.x"
+
           - script: |
-              pwd
-              ls -al
-              echo "Init Done"
+              curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+              echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/hashicorp.list
+              apt-get update && apt-get install terraform -y
+              echo "Check Terraform Version"
+              terraform -v
+            displayName: "Install Terraform"
