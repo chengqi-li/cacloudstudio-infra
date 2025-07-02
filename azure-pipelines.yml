@@ -42,6 +42,9 @@ stages:
               versionSpec: "3.x"
 
           - script: |
-              which terraform && terraform -version
-              echo "Terraform availability"
-            displayName: "Verify Terraform Availability"
+              echo "PATH=$PATH"
+              ls -l /usr/bin/terraform || echo "Terraform not in /usr/bin"
+              ls -l /usr/local/bin/terraform || echo "Terraform not in /usr/local/bin"
+              which terraform || echo "Terraform not found in PATH"
+              terraform -version || echo "terraform command failed"
+            displayName: "Debug Terraform Availability"
