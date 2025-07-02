@@ -38,6 +38,8 @@ stages:
 
         steps:
           - script: |
+              echo "All contents here"
+              ls -al
               echo "Downloading..."
               curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
               echo "Downloaded."
