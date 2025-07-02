@@ -47,6 +47,10 @@ stages:
                 file terraform.zip
                 unzip -v terraform.zip
                 echo "Unzipped."
+
+                ls -al
+                ls ./terraform
+
                 echo "Installing..."
                 mv ./terraform $HOME/bin/
                 echo "##vso[task.prependpath]$HOME/bin"
