@@ -36,6 +36,7 @@ stages:
             inputs:
               targetType: "inline"
               script: |
+                cd ..
                 mkdir -p $HOME/bin
                 echo "Downloading..."
                 curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
@@ -45,7 +46,6 @@ stages:
                 file terraform.zip
                 unzip -v terraform.zip
                 echo "Unzipped."
-
                 echo "Installing..."
                 mv terraform $HOME/bin/
                 echo "##vso[task.prependpath]$HOME/bin"
