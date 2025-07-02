@@ -42,8 +42,11 @@ stages:
               curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
               echo "Downloaded."
 
+              ls -lh terraform.zip
+              file terraform.zip
+
               echo "Unzipping..."
-              unzip terraform.zip
+              unzip -l terraform.zip
               echo "Unzipped."
 
               echo "Installing..."
