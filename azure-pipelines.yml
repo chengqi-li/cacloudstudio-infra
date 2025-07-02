@@ -40,13 +40,12 @@ stages:
                 pwd
                 mkdir -p $HOME/bin
                 echo "Downloading..."
-                curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
+                curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.tar.gz -o terraform.tar.gz
                 echo "Downloaded."
-                echo "Unzipping..."
-                ls -lh terraform.zip
-                file terraform.zip
-                unzip -v terraform.zip
-                echo "Unzipped."
+
+                echo "Tarring"
+                tar -xzf terraform.tar.gz
+                echo "Tarred."
 
                 ls -al
                 ls ./terraform
