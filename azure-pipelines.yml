@@ -70,8 +70,6 @@ stages:
                 cd $(Build.SourcesDirectory)/$(TF_DIR)
                 pwd
                 ls -al
-                echo "TF token present?"
-                echo "${TF_TOKEN_app_terraform_io:+[OK]}"
                 terraform init
                 terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
             env:
