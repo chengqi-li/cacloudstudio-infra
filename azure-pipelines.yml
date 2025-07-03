@@ -12,6 +12,7 @@ variables:
   TF_CLOUD_ORGANIZATION: CaCloudStudio
   TF_WORKSPACE: Infra
   TF_DIR: terraform
+  TF_VAR_DIR: web
 
 stages:
   - stage: Terraform
@@ -71,5 +72,5 @@ stages:
                 ls -al
                 export TF_TOKEN_app_terraform_io=$(TERRAFORM_TOKEN)
                 terraform init
-            #     terraform plan -input=false -out=tfplan
+                terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
             displayName: "Terraform Plan"
