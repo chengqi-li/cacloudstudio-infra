@@ -37,24 +37,23 @@ stages:
               targetType: "inline"
               script: |
                 cd ..
-                pwd
                 mkdir -p $HOME/bin
-                echo $HOME
-                echo "Downloading..."
-                curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
-                echo "Downloaded."
 
-                echo "Unzipping..."
+                echo "Home:"
+                echo $HOME
+
+                curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
+
                 unzip terraform.zip
-                echo "Unzipped."
 
                 ls -al
                 ls ./terraform
 
-                echo "Installing..."
+                echo "Updating PATH..."
                 mv ./terraform $HOME/bin/
                 echo "##vso[task.prependpath]$HOME/bin"
-                echo "Installed."
+                terraform -v
+                echo "Terraform installed."
             displayName: "Install Terraform"
 
           - task: Bash@3
@@ -72,6 +71,6 @@ stages:
                 ls -al
                 terraform init
             #     terraform plan -input=false -out=tfplan
-            # env:
-            #   TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
+            env:
+              TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
             displayName: "Terraform Plan"
