@@ -1,8 +1,8 @@
 terraform {
   required_version = ">= 1.6"
 
-  backend "remote" {
-    organization = "cacloudstudio"
+  cloud {
+    organization = "CaCloudStudio"
 
     workspaces {
       name = "Infra"
