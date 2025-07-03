@@ -14,21 +14,6 @@ variables:
   TF_DIR: terraform
 
 stages:
-  - stage: CloneInfraRepo
-    displayName: "Clone Infrastructure Repo"
-    jobs:
-      - job: CloneInfra
-        displayName: "Clone Infra Repo"
-        pool:
-          vmImage: "ubuntu-latest"
-        steps:
-          - checkout: self
-
-          - script: |
-              echo "Repository checked out successfully."
-              echo "DEBUG 100"
-              ls -al
-            displayName: "Success Message"
   - stage: Terraform
     jobs:
       - job: TerraformCI
@@ -37,11 +22,55 @@ stages:
           vmImage: "ubuntu-latest"
 
         steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: "3.x"
+          - checkout: self
 
           - script: |
-              which terraform && terraform -version
-              echo "Terraform availability"
-            displayName: "Verify Terraform Availability"
+              echo "Branch: $(Build.SourceBranch)"
+              echo "Repo directory: $(Build.SourcesDirectory)"
+              ls -al $(Build.SourcesDirectory)
+              echo "---"
+              ls -al $(Build.SourcesDirectory)/terraform || echo "No terraform directory found"
+            displayName: "Check repo and terraform directory"
+
+          - task: Bash@3
+            inputs:
+              targetType: "inline"
+              script: |
+                cd ..
+                mkdir -p $HOME/bin
+
+                echo "Home:"
+                echo $HOME
+
+                curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
+
+                unzip terraform.zip
+
+                ls -al
+                ls ./terraform
+
+                echo "Updating PATH..."
+                mv ./terraform $HOME/bin/
+                echo "##vso[task.prependpath]$HOME/bin"
+                terraform -v
+                echo "Terraform installed."
+            displayName: "Install Terraform"
+
+          - task: Bash@3
+            name: TerraformPlan
+            inputs:
+              targetType: "inline"
+              script: |
+                cd $(Build.SourcesDirectory)
+                ls -al
+                pwd
+                terraform --version
+                echo "Initializing Terraform with remote backend"
+                cd $(Build.SourcesDirectory)/$(TF_DIR)
+                pwd
+                ls -al
+                terraform init
+            #     terraform plan -input=false -out=tfplan
+            env:
+              TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
+            displayName: "Terraform Plan"
