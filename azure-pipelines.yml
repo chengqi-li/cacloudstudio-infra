@@ -70,7 +70,7 @@ stages:
                 pwd
                 ls -al
                 terraform init
-            #     terraform plan -input=false -out=tfplan
+                terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
             displayName: "Terraform Plan"
