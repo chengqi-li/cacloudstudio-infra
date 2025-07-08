@@ -85,6 +85,7 @@ stages:
                 echo "All files under directory here."
                 ls -al
 
+                export ARM_SUBSCRIPTION_ID="7ff3d3f3-af77-44ea-b5ef-bc089279f1cd"
                 echo "Test terraform versioning"
                 terraform -v
                 terraform apply main.tfplan
