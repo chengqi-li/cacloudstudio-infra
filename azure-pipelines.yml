@@ -71,7 +71,22 @@ stages:
                 pwd
                 ls -al
                 terraform init
-                terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
+                terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=main.tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
             displayName: "Terraform Plan"
+
+          - task: Bash@3
+            name: TerraformApply
+            inputs:
+              targetType: "inline"
+              script: |
+                cd $(Build.SourcesDirectory)/$(TF_DIR)
+                echo "All files under directory here."
+                ls -al
+
+                echo "Test terraform versioning"
+                terraform -v
+                terraform apply main.tfplan
+            env:
+              TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
