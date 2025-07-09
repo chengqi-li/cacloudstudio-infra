@@ -12,6 +12,7 @@ variables:
   TF_CLOUD_ORGANIZATION: CaCloudStudio
   TF_WORKSPACE: Infra
   TF_DIR: terraform
+  TF_VAR_DIR: web
 
 stages:
   - stage: Terraform
