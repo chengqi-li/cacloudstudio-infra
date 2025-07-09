@@ -68,27 +68,46 @@ cd ansible/ado
 ansible-playbook playbook.yml -i inventory.yaml
 ```
 
-## How to Setup Terraform Cloud in ADO pipeline
+## How to Setup HCP Terraform in ADO pipeline
 1. Create a workspace in your Terraform account. Select CLI-Driven workflow.
 
-2. Use command terraform login to authenticate into HCP Terraform (or follow instructions for credential block on the workspace website). You will be prompted to create a token and store it.
-```bash
-terraform login
-```
+2. We will be using HCP Terraform only to store state files that Azure DevOps can access. Thus, we must set the workspace's execution mode to "Local". You can find this option under "General" in the workspace settings.
 
-3. After authentication, add this code block into the Terraform configuration files.
+3. Insert this code block into the Terraform configuration files.
 ```bash
 terraform { 
   cloud { 
     
-    organization = "CaCloudStudio" 
+    organization = "Org Name" # make sure they match, case sensitive!
 
     workspaces { 
-      name = "Infra" 
+      name = "Workspace Name" 
     } 
   } 
 }
 ```
+
+4. Create a default azure-pipelines.yml template. Install necessary packages (i.e Terraform, curl, infra repo, etc). Remember to add to PATH. Example script below
+```BASH
+curl -# -L https://releases.hashicorp.com/terraform/1.6.6/terraform_1.6.6_linux_amd64.zip -o terraform.zip
+unzip terraform.zip
+
+mkdir $HOME/bin/
+mv ./terraform $HOME/bin/
+echo "##vso[task.prependpath]$HOME/bin"
+```
+
+5. In HCP Terraform, create a Team-wide API token for authentication inside CI/CD Pipeline. Make sure it contains proper permissions to plan, apply, and store state files.
+
+6. Inject the token as an environment variable into the pipeline. To do so, go to Azure DevOps, select the designated pipeline, then click Edit -> Variables. Add the token value into the pipeline as a secret value.
+
+7. Now, in any stage where access to this environment variable is necessary, use the env property and associate the token with the name TF_TOKEN_app_terraform_io.
+```BASH
+env:
+  TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
+```
+
+8. You can then execute any Terraform script/task in the ADO agent pool through this token.
 
 ## Use Docker to build image
 
