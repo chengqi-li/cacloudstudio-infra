@@ -56,6 +56,17 @@ stages:
                 echo "Terraform installed."
             displayName: "Install Terraform"
 
+          - task: AzureCLI@2
+            displayName: "Azure Login for Terraform"
+            inputs:
+              azureSubscription: "ADO Pipeline Connection" # name of the Azure Resource Manager service connection
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "Successfully authenticated with Azure using the Service Connection."
+                echo "Environment variables for ARM will be set automatically."
+              addSpnToEnvironment: true
+
           - task: Bash@3
             name: TerraformPlan
             inputs:
@@ -74,3 +85,18 @@ stages:
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
             displayName: "Terraform Plan"
+
+          - task: Bash@3
+            name: TerraformApply
+            inputs:
+              targetType: "inline"
+              script: |
+                cd $(Build.SourcesDirectory)/$(TF_DIR)
+                echo "All files under directory here."
+                ls -al
+
+                echo "Test terraform versioning"
+                terraform -v
+                terraform apply main.tfplan
+            env:
+              TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
