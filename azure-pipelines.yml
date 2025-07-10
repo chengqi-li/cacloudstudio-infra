@@ -92,10 +92,10 @@ stages:
                 terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
-              ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-              ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-              ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-              ARM_TENANT_ID: $(ARM_TENANT_ID)
+              ARM_CLIENT_ID: $(AzureLogin.ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET: $(AzureLogin.ARM_CLIENT_SECRET)
+              ARM_SUBSCRIPTION_ID: $(AzureLogin.ARM_SUBSCRIPTION_ID)
+              ARM_TENANT_ID: $(AzureLogin.ARM_TENANT_ID)
             displayName: "Terraform Plan"
 
           - task: Bash@3
