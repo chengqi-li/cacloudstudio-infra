@@ -57,11 +57,29 @@ stages:
                 echo "Terraform installed."
             displayName: "Install Terraform"
 
+          - task: AzureCLI@2
+            displayName: "Azure Login for Terraform"
+            inputs:
+              azureSubscription: "ADO Pipeline Connection" # name of the Azure Resource Manager service connection
+              scriptType: "bash"
+              scriptLocation: "inlineScript"
+              inlineScript: |
+                echo "Azure login completed."
+                echo "##vso[task.setvariable variable=ARM_CLIENT_ID;isOutput=true]${servicePrincipalId}"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;isOutput=true]${servicePrincipalKey}"
+                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;isOutput=true]${subscriptionId}"
+                echo "##vso[task.setvariable variable=ARM_TENANT_ID;isOutput=true]${tenantId}"
+              addSpnToEnvironment: true
+
           - task: Bash@3
             name: TerraformPlan
             inputs:
               targetType: "inline"
               script: |
+                echo "Test for Az CLI environment variables"
+                echo $ARM_CLIENT_ID
+                echo $ARM_SUBSCRIPTION_ID
+                echo $ARM_TENANT_ID
                 cd $(Build.SourcesDirectory)
                 ls -al
                 pwd
@@ -74,4 +92,27 @@ stages:
                 terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
+              ARM_CLIENT_ID: $(AzureLogin.ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET: $(AzureLogin.ARM_CLIENT_SECRET)
+              ARM_SUBSCRIPTION_ID: $(AzureLogin.ARM_SUBSCRIPTION_ID)
+              ARM_TENANT_ID: $(AzureLogin.ARM_TENANT_ID)
             displayName: "Terraform Plan"
+
+          - task: Bash@3
+            name: TerraformApply
+            inputs:
+              targetType: "inline"
+              script: |
+                cd $(Build.SourcesDirectory)/$(TF_DIR)
+                echo "All files under directory here."
+                ls -al
+
+                echo "Test terraform versioning"
+                terraform -v
+                terraform apply main.tfplan
+            env:
+              TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
+              ARM_CLIENT_ID: $(AzureLogin.ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET: $(AzureLogin.ARM_CLIENT_SECRET)
+              ARM_SUBSCRIPTION_ID: $(AzureLogin.ARM_SUBSCRIPTION_ID)
+              ARM_TENANT_ID: $(AzureLogin.ARM_TENANT_ID)
