@@ -65,10 +65,10 @@ stages:
               scriptLocation: "inlineScript"
               inlineScript: |
                 echo "Azure login completed."
-                echo "##vso[task.setvariable variable=ARM_CLIENT_ID]${servicePrincipalId}"
-                echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]${servicePrincipalKey}"
-                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]${subscriptionId}"
-                echo "##vso[task.setvariable variable=ARM_TENANT_ID]${tenantId}"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$ARM_CLIENT_ID"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$ARM_CLIENT_SECRET"
+                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$ARM_SUBSCRIPTION_ID"
+                echo "##vso[task.setvariable variable=ARM_TENANT_ID]$ARM_TENANT_ID"
               addSpnToEnvironment: true
 
           - task: Bash@3
@@ -92,10 +92,10 @@ stages:
                 terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
-              ARM_CLIENT_ID: $(AzureLogin.ARM_CLIENT_ID)
-              ARM_CLIENT_SECRET: $(AzureLogin.ARM_CLIENT_SECRET)
-              ARM_SUBSCRIPTION_ID: $(AzureLogin.ARM_SUBSCRIPTION_ID)
-              ARM_TENANT_ID: $(AzureLogin.ARM_TENANT_ID)
+              ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+              ARM_TENANT_ID: $(ARM_TENANT_ID)
             displayName: "Terraform Plan"
 
           - task: Bash@3
@@ -112,7 +112,7 @@ stages:
                 terraform apply main.tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
-              ARM_CLIENT_ID: $(AzureLogin.ARM_CLIENT_ID)
-              ARM_CLIENT_SECRET: $(AzureLogin.ARM_CLIENT_SECRET)
-              ARM_SUBSCRIPTION_ID: $(AzureLogin.ARM_SUBSCRIPTION_ID)
-              ARM_TENANT_ID: $(AzureLogin.ARM_TENANT_ID)
+              ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+              ARM_TENANT_ID: $(ARM_TENANT_ID)
