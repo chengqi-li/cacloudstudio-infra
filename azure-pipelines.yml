@@ -65,10 +65,13 @@ stages:
               scriptLocation: "inlineScript"
               inlineScript: |
                 echo "Azure login completed."
-                echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$ARM_CLIENT_ID"
-                echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$ARM_CLIENT_SECRET"
-                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$ARM_SUBSCRIPTION_ID"
-                echo "##vso[task.setvariable variable=ARM_TENANT_ID]$ARM_TENANT_ID"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_ID;issecret=false]$ARM_CLIENT_ID"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET;issecret=false]$ARM_CLIENT_SECRET"
+                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;issecret=false]$ARM_SUBSCRIPTION_ID"
+                echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=false]$ARM_TENANT_ID"
+                echo "Env Variables:"
+                echo "ARM_TENANT_ID=$(ARM_TENANT_ID)"
+                echo "ARM_SUBSCRIPTION_ID=$(ARM_SUBSCRIPTION_ID)"
               addSpnToEnvironment: true
 
           - task: Bash@3
