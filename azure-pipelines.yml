@@ -64,9 +64,31 @@ stages:
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
-                echo "Azure Login"
-                az login
+                echo "Getting current Azure login info..."
 
+                echo "ARM_CLIENT_ID=$ARM_CLIENT_ID"
+                echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID"
+                echo "ARM_TENANT_ID=$ARM_TENANT_ID"
+
+                echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$ARM_CLIENT_ID"
+                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;issecret=false]$ARM_SUBSCRIPTION_ID"
+                echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=false]$ARM_TENANT_ID"
+
+                echo "ENV VARIABLES TEST:"
+                echo "ARM_CLIENT_ID=$ARM_CLIENT_ID"
+                echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID"
+                echo "ARM_TENANT_ID=$ARM_TENANT_ID"
+              addSpnToEnvironment: true
+
+          - task: Bash@3
+            name: TerraformPlan
+            inputs:
+              targetType: "inline"
+              script: |
+                echo "Test for Az CLI environment variables"
+                echo $ARM_CLIENT_ID
+                echo $ARM_SUBSCRIPTION_ID
+                echo $ARM_TENANT_ID
                 cd $(Build.SourcesDirectory)
                 ls -al
                 pwd
@@ -77,50 +99,29 @@ stages:
                 ls -al
                 terraform init
                 terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
-              addSpnToEnvironment: true
+            env:
+              TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
+              ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+              ARM_TENANT_ID: $(ARM_TENANT_ID)
+            displayName: "Terraform Plan"
 
-          # - task: Bash@3
-          #   name: TerraformPlan
-          #   inputs:
-          #     targetType: "inline"
-          #     script: |
-          #       echo "Test for Az CLI environment variables"
-          #       echo $ARM_CLIENT_ID
-          #       echo $ARM_SUBSCRIPTION_ID
-          #       echo $ARM_TENANT_ID
-          #       cd $(Build.SourcesDirectory)
-          #       ls -al
-          #       pwd
-          #       terraform --version
-          #       echo "Initializing Terraform with remote backend"
-          #       cd $(Build.SourcesDirectory)/$(TF_DIR)
-          #       pwd
-          #       ls -al
-          #       terraform init
-          #       terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
-          #   env:
-          #     TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
-          #     ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-          #     ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-          #     ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-          #     ARM_TENANT_ID: $(ARM_TENANT_ID)
-          #   displayName: "Terraform Plan"
+          - task: Bash@3
+            name: TerraformApply
+            inputs:
+              targetType: "inline"
+              script: |
+                cd $(Build.SourcesDirectory)/$(TF_DIR)
+                echo "All files under directory here."
+                ls -al
 
-          # - task: Bash@3
-          #   name: TerraformApply
-          #   inputs:
-          #     targetType: "inline"
-          #     script: |
-          #       cd $(Build.SourcesDirectory)/$(TF_DIR)
-          #       echo "All files under directory here."
-          #       ls -al
-
-          #       echo "Test terraform versioning"
-          #       terraform -v
-          #       terraform apply main.tfplan
-          #   env:
-          #     TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
-          #     ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-          #     ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-          #     ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-          #     ARM_TENANT_ID: $(ARM_TENANT_ID)
+                echo "Test terraform versioning"
+                terraform -v
+                terraform apply main.tfplan
+            env:
+              TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
+              ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+              ARM_TENANT_ID: $(ARM_TENANT_ID)
