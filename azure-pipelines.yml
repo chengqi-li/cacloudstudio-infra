@@ -65,7 +65,7 @@ stages:
               scriptLocation: "inlineScript"
               inlineScript: |
                 echo "Azure Login"
-                az account show
+                az login
 
                 cd $(Build.SourcesDirectory)
                 ls -al
