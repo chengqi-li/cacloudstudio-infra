@@ -66,8 +66,7 @@ stages:
               inlineScript: |
                 echo "Azure Login"
                 az account show
-                echo "TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)"
-                export TF_TOKEN_app_terraform_io=$(TERRAFORM_TOKEN)
+
                 cd $(Build.SourcesDirectory)
                 ls -al
                 pwd
