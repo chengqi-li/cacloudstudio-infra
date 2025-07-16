@@ -65,7 +65,7 @@ stages:
               scriptLocation: "inlineScript"
               inlineScript: |
                 ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-                echo "Exporting Azure CLI credentials as environment variables:"
+                echo "Exporting Azure CLI credentials as environment variables..."
                 echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$servicePrincipalId"
                 echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;issecret=false]$ARM_SUBSCRIPTION_ID"
                 echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=false]$tenantId"
@@ -92,7 +92,7 @@ stages:
                 pwd
                 ls -al
                 terraform init
-                terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
+                terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=main.tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
               ARM_CLIENT_ID: $(ARM_CLIENT_ID)
@@ -112,9 +112,7 @@ stages:
 
                 echo "Test terraform versioning"
                 terraform -v
-                terraform apply tfplan
-                terraform plan -destroy -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=de.tfplan
-                terraform apply de.tfplan
+                terraform apply main.tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
               ARM_CLIENT_ID: $(ARM_CLIENT_ID)
