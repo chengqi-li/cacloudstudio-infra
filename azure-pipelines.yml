@@ -58,26 +58,18 @@ stages:
             displayName: "Install Terraform"
 
           - task: AzureCLI@2
-            displayName: "Azure Login for Terraform"
+            displayName: "Azure Credentials Init"
             inputs:
               azureSubscription: "ADO Pipeline Connection" # name of the Azure Resource Manager service connection
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
-                echo "Getting current Azure login info..."
-
-                echo "ARM_CLIENT_ID=$ARM_CLIENT_ID"
-                echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID"
-                echo "ARM_TENANT_ID=$ARM_TENANT_ID"
-
-                echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$ARM_CLIENT_ID"
-                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;issecret=false]$ARM_SUBSCRIPTION_ID"
-                echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=false]$ARM_TENANT_ID"
-
-                echo "ENV VARIABLES TEST:"
-                echo "ARM_CLIENT_ID=$ARM_CLIENT_ID"
-                echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID"
-                echo "ARM_TENANT_ID=$ARM_TENANT_ID"
+                ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+                echo "Exporting Azure CLI credentials as environment variables..."
+                echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$servicePrincipalId"
+                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$ARM_SUBSCRIPTION_ID"
+                echo "##vso[task.setvariable variable=ARM_TENANT_ID]$tenantId"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$servicePrincipalKey"
               addSpnToEnvironment: true
 
           - task: Bash@3
@@ -89,6 +81,8 @@ stages:
                 echo $ARM_CLIENT_ID
                 echo $ARM_SUBSCRIPTION_ID
                 echo $ARM_TENANT_ID
+                echo "Test for Client secret"
+                echo $ARM_CLIENT_SECRET
                 cd $(Build.SourcesDirectory)
                 ls -al
                 pwd
@@ -98,7 +92,7 @@ stages:
                 pwd
                 ls -al
                 terraform init
-                terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=tfplan
+                terraform plan -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=main.tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
               ARM_CLIENT_ID: $(ARM_CLIENT_ID)
