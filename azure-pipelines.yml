@@ -67,8 +67,8 @@ stages:
                 ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
                 echo "Exporting Azure CLI credentials as environment variables..."
                 echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$servicePrincipalId"
-                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;issecret=false]$ARM_SUBSCRIPTION_ID"
-                echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=false]$tenantId"
+                echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$ARM_SUBSCRIPTION_ID"
+                echo "##vso[task.setvariable variable=ARM_TENANT_ID]$tenantId"
                 echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$servicePrincipalKey"
               addSpnToEnvironment: true
 
