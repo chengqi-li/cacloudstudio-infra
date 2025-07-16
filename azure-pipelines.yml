@@ -64,19 +64,20 @@ stages:
               scriptType: "bash"
               scriptLocation: "inlineScript"
               inlineScript: |
+                echo "Subscription_id test:"
+                echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID"
                 ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
-                ARM_TENANT_ID=$(az account show --query tenantId -o tsv)
-                ARM_CLIENT_ID=$(az account show --query user.name -o tsv)
 
-                echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$ARM_CLIENT_ID"
+                echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$servicePrincipalId"
                 echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID;issecret=false]$ARM_SUBSCRIPTION_ID"
-                echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=false]$ARM_TENANT_ID"
+                echo "##vso[task.setvariable variable=ARM_TENANT_ID;issecret=false]$tenantId"
                 echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$servicePrincipalKey"
 
                 echo "ENV VARIABLES TEST:"
                 echo "ARM_CLIENT_ID=$ARM_CLIENT_ID"
                 echo "ARM_SUBSCRIPTION_ID=$ARM_SUBSCRIPTION_ID"
                 echo "ARM_TENANT_ID=$ARM_TENANT_ID"
+                echo "ARM_TENANT_ID=$ARM_CLIENT_SECRET"
               addSpnToEnvironment: true
 
           - task: Bash@3
