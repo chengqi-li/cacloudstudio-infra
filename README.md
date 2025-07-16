@@ -101,7 +101,7 @@ echo "##vso[task.prependpath]$HOME/bin"
 
 6. Inject the token as an environment variable into the pipeline. To do so, go to Azure DevOps, select the designated pipeline, then click Edit -> Variables. Add the token value into the pipeline as a secret value.
 
-7. Now, in any stage where access to this environment variable is necessary, use the env property and associate the token with the name TF_TOKEN_app_terraform_io.
+7. Now, in Bash tasks where access to this environment variable is necessary, use the env property and associate the token with the name TF_TOKEN_app_terraform_io.
 ```BASH
 env:
   TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
@@ -109,8 +109,39 @@ env:
 
 8. You can then execute any Terraform script/task in the ADO agent pool through this token.
 
+## Use Terraform Plan/Apply in ADO Pipeline
+1. Create an Application Registration in Azure or Microsoft Entra. Then, create a client secret using **Certificates & Secrets** -> **New Client Secret**. Make sure to COPY the secret value and ID before leaving the page, as you will not have access to them again.
+
+2. Inside the scope of your choice (i.e Subscription, Resource Group), add the newly created Application Registration to the Access Control (IAM). Select these options: **Role** --> **Privileged administrator roles** --> **Contributor**, **Members** --> **Select Members** --> type the *name* of your application registration. Then, click Review + assign.
+
+3. Now, head to Azure Dev Ops portal. Inside your organization, create a new Service Connection by heading to **Project settings** --> **Service connections** --> **New service connection**. Select the following options: **Azure Resource Manager**, Identity: **App registration or managed identity (manual)**, Credential: **Secret**. Then, fill out the subscription ID, name, and authentication boxes with information from your previously created application registration.
+
+4. After finishing creating the service connection, you can now reference it from the AzureCLI@2 task like so:
+```bash
+task: AzureCLI@2
+  displayName: "Azure CLI Task"
+  inputs:
+    azureSubscription: "Name of Service Connection" 
+```
+
+5. The AzureCLI@2 task automatically sets the environment variables for client ID, tenant ID, and client secret. These will need to be passed into Terraform in future tasks, so we can use these scripts to export them. The subscription ID is not automatically set, so we will use `az account show` for that.
+```Bash
+ARM_SUBSCRIPTION_ID=$(az account show --query id -o tsv)
+echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$ARM_SUBSCRIPTION_ID"
+
+echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$servicePrincipalId"
+echo "##vso[task.setvariable variable=ARM_TENANT_ID]$tenantId"
+echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$servicePrincipalKey"
+```
+
+6. In future tasks that require use of Terraform scripts, set the env: block like below. This will allow Terraform's Azurerm to automatically authenticate to your Azure subscription.
+```bash
+env:
+  ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+  ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+  ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+  ARM_TENANT_ID: $(ARM_TENANT_ID)
+```
 ## Use Docker to build image
 
 ## Use Helm to deploy kubernetes service
-
-## Use ADO pipeline for CI/CD
