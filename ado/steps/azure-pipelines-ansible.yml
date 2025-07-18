@@ -1,0 +1,36 @@
+trigger:
+  branches:
+    - main
+  paths:
+    include:
+      - ansible/**
+
+stages:
+  - stage: Ansible
+    jobs:
+      - job: AnsibleRun
+        displayName: "Run Ansible Playbook"
+        pool:
+          vmImage: "ubuntu-latest"
+        steps:
+          - checkout: self
+
+          - script: |
+              cd ..
+              sudo apt-get update
+              sudo apt-get install -y sshpass python3-pip
+              pip3 install ansible
+            displayName: "Install Ansible and sshpass"
+
+            # TODO: add task to retrieve Azure VM IP, username/pw into environment variables
+
+          - script: |
+              cd $(ANSIBLE_DIR)
+              export ANSIBLE_HOST_KEY_CHECKING=False
+              ansible-playbook -i inventory.yml playbook.yml
+            displayName: "Run Ansible Playbook"
+            env:
+              AZURE_VM_IP: $(AZURE_VM_IP)
+              AZURE_VM_ADMINUSER: $(AZURE_VM_ADMINUSER)
+              AZURE_VM_PASSWORD: $(AZURE_VM_PASSWORD)
+              PYTHON_PATH: $(PYTHON_PATH)
