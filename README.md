@@ -116,7 +116,7 @@ env:
 
 3. Now, head to Azure Dev Ops portal. Inside your organization, create a new Service Connection by heading to **Project settings** --> **Service connections** --> **New service connection**. Select the following options: **Azure Resource Manager**, Identity: **App registration or managed identity (manual)**, Credential: **Secret**. Then, fill out the subscription ID, name, and authentication boxes with information from your previously created application registration.
 
-4. After finishing creating the service connection, you can now reference it from the AzureCLI@2 task like so:
+4. After finishing creating the service connection, you can now reference it from the AzureCLI@2 task like below. To grant the pipeline access to the service connection, you will need to either add the pipeline in the Security options of the service connection, or run the pipeline and choose **Permit** once the error message **This pipeline needs permission to access a resource** shows up.
 ```bash
 task: AzureCLI@2
   displayName: "Azure CLI Task"
