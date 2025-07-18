@@ -6,7 +6,11 @@
 # https://aka.ms/yaml
 
 trigger:
-  - main
+  branches:
+    - main
+  paths:
+    include:
+      - terraform/**
 
 variables:
   TF_CLOUD_ORGANIZATION: CaCloudStudio
