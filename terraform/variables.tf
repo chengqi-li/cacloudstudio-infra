@@ -83,3 +83,22 @@ variable "azure_linux_virtual_machine" {
     })
   )
 }
+
+#########################
+# Static Site variables #
+#########################
+variable "static_site_enabled" {
+  type        = bool
+  description = "static site module enabled or not"
+  default     = false
+}
+
+variable "azurerm_static_site" {
+  description = "map of variables for azure static site"
+  type = map(
+    object({
+      location = optional(string, "westus")
+    })
+  )
+}
+
