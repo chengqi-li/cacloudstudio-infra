@@ -1,1 +1,1 @@
-variable "azurerm_static_site" {}
+variable "azure_static_site" {}
