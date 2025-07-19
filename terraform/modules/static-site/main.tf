@@ -5,8 +5,9 @@ resource "azurerm_resource_group" "resource_group" {
 }
 
 resource "azurerm_static_site" "static_site" {
+  for_each            = { for key, value in var.azure_static_site : key => value }
   name                = "cacloudstudio"
-  location            = azurerm_resource_group.resource_group.location
-  resource_group_name = azurerm_resource_group.resource_group.name
+  location            = each.value.location
+  resource_group_name = azurerm_resource_group.resource_group[each.key].name
 }
 
