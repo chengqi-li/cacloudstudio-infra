@@ -7,7 +7,8 @@
 
 trigger:
   branches:
-    - main
+    include:
+      - main
   paths:
     include:
       - terraform/**
@@ -117,6 +118,10 @@ stages:
                 echo "Test terraform versioning"
                 terraform -v
                 terraform apply main.tfplan
+
+                echo "Planning:"
+                terraform plan -destroy -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=de.tfplan
+                terraform apply de.tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
               ARM_CLIENT_ID: $(ARM_CLIENT_ID)
