@@ -13,6 +13,14 @@ trigger:
     include:
       - terraform/**
 
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - terraform/**
+
 variables:
   TF_CLOUD_ORGANIZATION: CaCloudStudio
   TF_WORKSPACE: Infra
@@ -108,6 +116,7 @@ stages:
 
           - task: Bash@3
             name: TerraformApply
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
             inputs:
               targetType: "inline"
               script: |
