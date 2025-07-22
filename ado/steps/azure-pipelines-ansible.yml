@@ -59,10 +59,12 @@ stages:
           - script: |
               cd $(ANSIBLE_DIR)
               export ANSIBLE_HOST_KEY_CHECKING=False
-              ansible-playbook -i inventory.yml playbook.yml
+              ansible-playbook playbook.yml -i inventory.yaml --extra-vars "domain=$DOMAIN email=$EMAIL"
             displayName: "Run Ansible Playbook"
             env:
               AZURE_VM_IP: $(AZURE_VM_IP)
-              AZURE_VM_ADMINUSER: $(AZURE_VM_ADMINUSER)
+              AZURE_VM_ADMINUSER: "adminuser"
               AZURE_VM_PASSWORD: $(AZURE_VM_PASSWORD)
-              PYTHON_PATH: $(PYTHON_PATH)
+              PYTHON_PATH: "/usr/bin/python3"
+              DOMAIN: "cacloudstudio.com"
+              EMAIL: "anna.xing@cacloudstudio.com"
