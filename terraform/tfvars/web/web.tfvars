@@ -62,3 +62,7 @@ azure_linux_virtual_machine = {
     count = 1
   }
 }
+
+static_site_enabled = false
+
+azurerm_static_site = {}
