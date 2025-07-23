@@ -20,7 +20,7 @@ variables:
 stages:
   - stage: Ansible
     jobs:
-      - job: Azure Connection
+      - job: AzureConnection
         displayName: "Export Azure VM information as environment variables"
         pool:
           vmImage: "ubuntu-latest"
