@@ -56,7 +56,7 @@ stages:
 
       - job: AnsibleRun
         displayName: "Run Ansible Playbook"
-        dependsOn: Azure Connection
+        dependsOn: AzureConnection
         steps:
           - script: |
               cd ..
