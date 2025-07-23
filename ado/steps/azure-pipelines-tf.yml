@@ -110,6 +110,7 @@ stages:
             inputs:
               targetType: "inline"
               script: |
+                cd $(Build.SourcesDirectory)/$(TF_DIR)
                 echo "Terraform Apply"
                 terraform apply main.tfplan
             env:
