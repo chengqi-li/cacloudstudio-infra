@@ -5,6 +5,14 @@ trigger:
     include:
       - ansible/**
 
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - ansible/**
+
 variables:
   ANSIBLE_DIR: ansible/web
 
