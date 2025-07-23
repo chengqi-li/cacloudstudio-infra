@@ -68,7 +68,7 @@ stages:
           - script: |
               cd $(ANSIBLE_DIR)
               export ANSIBLE_HOST_KEY_CHECKING=False
-              ansible-playbook playbook.yml -i inventory.yaml --extra-vars "domain=$DOMAIN email=$EMAIL"
+              ansible-playbook playbook.yml -i inventory.yml --extra-vars "domain=$DOMAIN email=$EMAIL"
             displayName: "Run Ansible Playbook"
             env:
               AZURE_VM_IP: $(AZURE_VM_IP)
