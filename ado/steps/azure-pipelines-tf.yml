@@ -90,16 +90,6 @@ stages:
             inputs:
               targetType: "inline"
               script: |
-                echo "Test for Az CLI environment variables"
-                echo $ARM_CLIENT_ID
-                echo $ARM_SUBSCRIPTION_ID
-                echo $ARM_TENANT_ID
-                echo "Test for Client secret"
-                echo $ARM_CLIENT_SECRET
-                cd $(Build.SourcesDirectory)
-                ls -al
-                pwd
-                terraform --version
                 echo "Initializing Terraform with remote backend"
                 cd $(Build.SourcesDirectory)/$(TF_DIR)
                 pwd
@@ -120,17 +110,8 @@ stages:
             inputs:
               targetType: "inline"
               script: |
-                cd $(Build.SourcesDirectory)/$(TF_DIR)
-                echo "All files under directory here."
-                ls -al
-
-                echo "Test terraform versioning"
-                terraform -v
+                echo "Terraform Apply"
                 terraform apply main.tfplan
-
-                echo "Planning:"
-                terraform plan -destroy -var-file=tfvars/$(TF_VAR_DIR)/$(TF_VAR_DIR).tfvars -out=de.tfplan
-                terraform apply de.tfplan
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
               ARM_CLIENT_ID: $(ARM_CLIENT_ID)
