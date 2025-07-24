@@ -44,7 +44,7 @@ brew install sshpass
 3. Run Ansible playbook
 ```bash
 cd ansible/web
-ansible-playbook playbook.yml -i inventory.yaml --extra-vars "domain=$DOMAIN email=$EMAIL"
+ansible-playbook playbook.yml -i inventory.yml --extra-vars "domain=$DOMAIN email=$EMAIL"
 ```
 
 ## Use Ansible to install virtual machine for ado self hosted agents
@@ -65,7 +65,7 @@ brew install sshpass
 3. Run Ansible playbook
 ```bash
 cd ansible/ado
-ansible-playbook playbook.yml -i inventory.yaml
+ansible-playbook playbook.yml -i inventory.yml
 ```
 
 ## How to Setup HCP Terraform in ADO pipeline
