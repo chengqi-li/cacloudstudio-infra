@@ -34,7 +34,7 @@ stages:
               RunAsPreJob: true
           - script: |
               echo "Setting keyvault password as variable"
-              echo "##vso[task.setvariable variable=AZURE_VM_PASSWORD;isOutput=true]$web-0-secret"
+              echo "##vso[task.setvariable variable=AZURE_VM_PASSWORD;isOutput=true]$(web-0-secret)"
             displayName: "Get VM Password"
             name: GetVMPw
 
@@ -69,8 +69,19 @@ stages:
               echo "Directory of Ansible inventory/playbook:"
               cd $(ANSIBLE_DIR)
               pwd
+                  echo "Creating temporary Ansible inventory"
+                  cat <<END > temp_inventory.yml
+              webserver:
+                hosts:
+                  web:
+                    ansible_host: $AZURE_VM_IP
+                    ansible_user: $AZURE_VM_ADMINUSER
+                    ansible_ssh_pass: $AZURE_VM_PASSWORD
+                    ansible_python_interpreter: $PYTHON_PATH
+                    ansible_ssh_common_args: "-o StrictHostKeyChecking=no"
+              END
               export ANSIBLE_HOST_KEY_CHECKING=False
-              ansible-playbook playbook.yml -i inventory.yml --extra-vars "domain=$DOMAIN email=$EMAIL"
+              ansible-playbook playbook.yml -i temp_inventory.yml --extra-vars "domain=$DOMAIN email=$EMAIL"
             displayName: "Run Ansible Playbook"
             env:
               AZURE_VM_IP: $(AZURE_VM_IP)
