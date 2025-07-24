@@ -38,6 +38,13 @@ stages:
             displayName: "Get VM Password"
             name: GetVMPw
 
+          - script: |
+              echo "AzureVMPassword:"
+              echo $(AZURE_VM_PASSWORD)
+            env:
+              AZURE_VM_PASSWORD: $(AZURE_VM_PASSWORD)
+            displayName: "Test step"
+
           - task: AzureCLI@2
             name: GetVMIp
             inputs:
