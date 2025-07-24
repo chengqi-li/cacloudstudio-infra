@@ -131,14 +131,15 @@ echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$ARM_SUBSCRIPTION_ID"
 
 echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$servicePrincipalId"
 echo "##vso[task.setvariable variable=ARM_TENANT_ID]$tenantId"
-echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$servicePrincipalKey"
 ```
 
-6. In future tasks that require use of Terraform scripts, set the env: block like below. This will allow Terraform's Azurerm to automatically authenticate to your Azure subscription.
+6. It is not recommended to pass use these commands to set secrets. Thus, we will manually set the pipeline variable for client secret. Head to the pipeline, then go to **Edit** --> **Variables** and hit the plus sign next to the search bar. Enter in the variable name, and the client secret copied earlier as the value. Be sure to check the box that says "Keep this value secret".
+
+7. In future tasks that require use of Terraform scripts, set the env: block like below. This will allow Terraform's Azurerm to automatically authenticate to your Azure subscription.
 ```bash
 env:
   ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-  ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+  ARM_CLIENT_SECRET: $(SECRET_VARIABLE_NAME)
   ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
   ARM_TENANT_ID: $(ARM_TENANT_ID)
 ```

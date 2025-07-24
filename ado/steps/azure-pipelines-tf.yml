@@ -82,7 +82,6 @@ stages:
                 echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$servicePrincipalId"
                 echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$ARM_SUBSCRIPTION_ID"
                 echo "##vso[task.setvariable variable=ARM_TENANT_ID]$tenantId"
-                echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$servicePrincipalKey"
               addSpnToEnvironment: true
 
           - task: Bash@3
@@ -99,7 +98,7 @@ stages:
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
               ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-              ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              ARM_CLIENT_SECRET: $(SERVICE_PRINCIPAL_KEY)
               ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
               ARM_TENANT_ID: $(ARM_TENANT_ID)
             displayName: "Terraform Plan"
@@ -116,6 +115,6 @@ stages:
             env:
               TF_TOKEN_app_terraform_io: $(TERRAFORM_TOKEN)
               ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-              ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              ARM_CLIENT_SECRET: $(SERVICE_PRINCIPAL_KEY)
               ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
               ARM_TENANT_ID: $(ARM_TENANT_ID)
