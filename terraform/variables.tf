@@ -102,3 +102,28 @@ variable "azurerm_static_site" {
   )
 }
 
+################################
+# Kubernetes Service variables #
+################################
+variable "aks_enabled" {
+  type        = bool
+  description = "aks module enabled or not"
+  default     = false
+}
+
+variable "azure_kubernetes_service" {
+  type = map(object({
+    location = optional(string, "westus")
+    default_node_pool = object({
+      name                        = string
+      node_count                  = optional(number, 1)
+      vm_size                     = string
+      auto_scaling_enabled        = optional(bool, false)
+      temporary_name_for_rotation = optional(string, "temp_node")
+    })
+    linux_profile = object({
+      admin_username = string
+    })
+  }))
+}
+

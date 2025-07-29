@@ -66,3 +66,22 @@ azure_linux_virtual_machine = {
 static_site_enabled = false
 
 azurerm_static_site = {}
+
+aks_enabled = true
+
+azure_kubernetes_service = {
+  web = {
+    location = "West US"
+    default_node_pool = {
+      name                        = "default"
+      node_count                  = 1
+      vm_size                     = "Standard_DS2_v2"
+      auto_scaling_enabled        = true
+      temporary_name_for_rotation = "temp_pool"
+    }
+    linux_profile = {
+      admin_username = "azureuser"
+    }
+  }
+}
+
