@@ -120,6 +120,8 @@ variable "azure_kubernetes_service" {
       vm_size                     = string
       auto_scaling_enabled        = optional(bool, false)
       temporary_name_for_rotation = optional(string, "temp_node")
+      max_count                   = optional(number)
+      min_count                   = optional(number)
     })
     linux_profile = object({
       admin_username = string
