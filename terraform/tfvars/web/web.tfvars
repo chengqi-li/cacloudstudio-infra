@@ -8,7 +8,7 @@ azure_key_vault = {
   }
 }
 
-network_enabled = true
+network_enabled = false
 
 azure_virtual_network = {
   web = {
@@ -55,7 +55,7 @@ azure_virtual_network = {
   }
 }
 
-vm_enabled = true
+vm_enabled = false
 
 azure_linux_virtual_machine = {
   web = {
@@ -66,3 +66,24 @@ azure_linux_virtual_machine = {
 static_site_enabled = false
 
 azurerm_static_site = {}
+
+aks_enabled = true
+
+azure_kubernetes_service = {
+  web = {
+    location = "West US"
+    default_node_pool = {
+      name                        = "default"
+      node_count                  = 1
+      vm_size                     = "standard_a2_v2"
+      auto_scaling_enabled        = true
+      temporary_name_for_rotation = "temp"
+      max_count                   = 3
+      min_count                   = 1
+    }
+    linux_profile = {
+      admin_username = "azureuser"
+    }
+  }
+}
+
