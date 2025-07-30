@@ -1,5 +1,5 @@
 resource "azurerm_resource_group" "resource_group" {
-  for_each = { for key, value in var.azure_kubernetes_service : key => value }
+  for_each = var.azure_kubernetes_service
   name     = "${each.key}-kubernetes-rg"
   location = each.value.location
 }
@@ -18,7 +18,7 @@ resource "azurerm_key_vault_secret" "aks_ssh_private_key" {
 }
 
 resource "azurerm_kubernetes_cluster" "kubernetes_service" {
-  for_each            = { for key, value in var.azure_kubernetes_service : key => value }
+  for_each            = var.azure_kubernetes_service
   name                = "${each.key}-aks"
   location            = each.value.location
   resource_group_name = lookup(azurerm_resource_group.resource_group, each.key).name
