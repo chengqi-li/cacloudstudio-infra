@@ -4,7 +4,7 @@ trigger:
       - main
   paths:
     include:
-      - terraform/**
+      - ado/manifest/**
 
 variables:
   imageName: nginx
