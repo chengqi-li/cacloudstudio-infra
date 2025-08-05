@@ -1,0 +1,42 @@
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - terraform/**
+
+variables:
+  imageName: nginx
+
+stages:
+  - stage: BuildAndPushImage
+    jobs:
+      - job: Build
+        steps:
+          - task: Docker@2
+            inputs:
+              command: buildAndPush
+              containerRegistry: $(ACRServiceConnection)
+              repository: $(imageName)
+              dockerfile: Dockerfile
+              tags: |
+                $(Build.BuildId)
+
+  - stage: Deploy
+    dependsOn: BuildAndPushImage
+    jobs:
+      - job: Deploy
+        steps:
+          - checkout: self
+
+          - task: Kubernetes@1
+            displayName: Deploy to AKS
+            inputs:
+              connectionType: "Service Connection"
+              kubernetesServiceEndpoint: AKS Service Connection
+              command: apply
+              useConfigurationFile: true
+              configuration: |
+                $(Build.SourcesDirectory)/ado/steps/deployment.yml
+                $(Build.SourcesDirectory)/ado/steps/service.yml

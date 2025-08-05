@@ -146,3 +146,21 @@ env:
 ## Use Docker to build image
 
 ## Use Helm to deploy kubernetes service
+
+## Use Kubernetes to Deploy Docker Image
+
+1. First, upload docker image to Azure Container Registry. Copy your ACR DNS for use later.
+
+2. Provision an AKS service (with Terraform).
+
+3. Create a deployment.yaml manifest file. Under containers: block, there will be containers with image: blocks. Place the DNS under the image: block, followed by your Docker image name and tag.
+
+4. Create a service.yaml file, as well as other necessary yaml files (ex: ingress.yaml, hpa.yaml).
+
+5. Use kubectl to apply your yaml manifest files.
+
+## Configure ADO Pipeline to Deploy Docker Containers onto AKS
+
+1. Similar to the ADO Pipeline for Terraform, a service connection as well as app registration on the Azure portal side will be needed. Assign the proper permissions to the app registration, such that the ADO pipeline connected to it will be able to manipulate AKS.
+
+2. The pipeline will use Docker@2 and Kubernetes@1 task to push the docker image into a Container Registry and deploy into AKS.
