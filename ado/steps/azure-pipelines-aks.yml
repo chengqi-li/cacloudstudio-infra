@@ -14,6 +14,7 @@ resources:
       name: chengqi-li/cacloudstudio-web
       ref: refs
       endpoint: $(GithubConnection)
+      path: dockerSource
 
 variables:
   imageName: nginx
