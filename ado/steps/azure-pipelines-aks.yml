@@ -7,6 +7,14 @@ trigger:
     include:
       - ado/manifest/**
 
+resources:
+  repositories:
+    - repository: web-app
+      type: github
+      name: chengqi-li/cacloudstudio-web
+      ref: refs
+      endpoint: $(GithubConnection)
+
 variables:
   imageName: nginx
   tfPrefix: web
@@ -16,12 +24,15 @@ stages:
     jobs:
       - job: Build
         steps:
+          - checkout: web-app
+            path: dockerSource
+
           - task: Docker@2
             inputs:
               command: buildAndPush
               containerRegistry: "$(tfPrefix)acr1000"
               repository: $(imageName)
-              dockerfile: Dockerfile
+              dockerfile: $(Build.SourcesDirectory)/dockerSource/Dockerfile
               tags: |
                 $(Build.BuildId)
 
