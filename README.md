@@ -181,15 +181,31 @@ kubectl apply -f others.yaml
 - task: Docker@2
   inputs:
     command: buildAndPush
-      containerRegistry: Docker Registry Connection
+      containerRegistry: <service-connection-name>
 
 - task: Kubernetes@1
   displayName: Deploy to AKS
   inputs:
     connectionType: "Azure Resource Manager"
-    azureSubscriptionEndpoint: ADO Pipeline Connection
+    azureSubscriptionEndpoint: <service-connection-name>
     azureResourceGroup: <rg-name>
     kubernetesCluster: <cluster-name>
 ```
+As such, the pipeline is connecting to the necessary resources and able to perform tasks such as kubectl apply and push Docker images to ACR.
 
-3. As such, the pipeline is connecting to the necessary resources and able to perform tasks such as kubectl apply and push Docker images to ACR.
+3. At the top of your pipeline yaml, allow access to the repository containing code for your Docker image as such.
+```bash
+resources:
+  repositories:
+    - repository: web-app
+      type: github
+      name: <organization>/<repo-name>
+      ref: refs
+      endpoint: $(GithubConnection)
+```
+
+4. Lastly, configure the following variables, with $GithubConnection being the name of the service connection used to connect with your organization Github, and $dockerfilePath being the path inside your repo under which the desired Dockerfile resides.
+```bash
+$GithubConnection = "Github Service Connection"
+$dockerfilePath = "src/" # Note: the / is important here.
+```
