@@ -32,7 +32,7 @@ stages:
               command: buildAndPush
               containerRegistry: "$(tfPrefix)acr1000"
               repository: $(imageName)
-              dockerfile: $(Build.SourcesDirectory)/dockerSource/Dockerfile
+              dockerfile: $(Build.SourcesDirectory)/dockerSource/$(dockerfilePath)Dockerfile
               tags: |
                 $(Build.BuildId)
 
