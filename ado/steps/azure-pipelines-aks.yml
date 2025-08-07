@@ -1,3 +1,4 @@
+# Pending: trigger on update to docker image hosted in separate repo?
 trigger:
   branches:
     include:
@@ -6,20 +7,32 @@ trigger:
     include:
       - ado/manifest/**
 
+resources:
+  repositories:
+    - repository: web-app
+      type: github
+      name: chengqi-li/cacloudstudio-web
+      ref: refs
+      endpoint: $(GithubConnection)
+
 variables:
   imageName: nginx
+  tfPrefix: web
 
 stages:
   - stage: BuildAndPushImage
     jobs:
       - job: Build
         steps:
+          - checkout: web-app
+            path: dockerSource
+
           - task: Docker@2
             inputs:
               command: buildAndPush
-              containerRegistry: $(ACRServiceConnection)
+              containerRegistry: "$(tfPrefix)acr1000"
               repository: $(imageName)
-              dockerfile: Dockerfile
+              dockerfile: $(Build.SourcesDirectory)/dockerSource/Dockerfile
               tags: |
                 $(Build.BuildId)
 
@@ -33,10 +46,10 @@ stages:
           - task: Kubernetes@1
             displayName: Deploy to AKS
             inputs:
-              connectionType: "Service Connection"
-              kubernetesServiceEndpoint: AKS Service Connection
+              connectionType: "Azure Resource Manager"
+              azureSubscriptionEndpoint: ADO Pipeline Connection
+              azureResourceGroup: "$(tfPrefix)-kubernetes-rg"
+              kubernetesCluster: $(tfPrefix)-aks
               command: apply
               useConfigurationFile: true
-              configuration: |
-                $(Build.SourcesDirectory)/ado/steps/deployment.yml
-                $(Build.SourcesDirectory)/ado/steps/service.yml
+              configuration: "$(Build.SourcesDirectory)/ado/manifest/*.yml"
