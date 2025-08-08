@@ -1,31 +1,30 @@
 resource "azurerm_resource_group" "resource_group" {
-  for_each = var.azure_kubernetes_service
+  for_each = { for k, v in var.azure_kubernetes_service : k => v if v.aks_create || v.acr_create }
   name     = "${each.key}-kubernetes-rg"
   location = each.value.location
 }
 
 resource "azurerm_container_registry" "acr" {
-  for_each            = var.azure_kubernetes_service
+  for_each            = { for k, v in var.azure_kubernetes_service : k => v if v.acr_create }
   name                = "${each.key}acr1000"
-  resource_group_name = lookup(azurerm_resource_group.resource_group, each.key).name
+  resource_group_name = azurerm_resource_group.resource_group[each.key].name
   location            = each.value.location
   sku                 = "Basic"
   admin_enabled       = false
 }
 
 resource "azurerm_role_assignment" "acr_pull" {
-  depends_on           = [azurerm_kubernetes_cluster.kubernetes_service]
-  for_each             = var.azure_kubernetes_service
+  for_each             = { for k, v in var.azure_kubernetes_service : k => v if v.aks_create && v.acr_create }
   principal_id         = azurerm_kubernetes_cluster.kubernetes_service[each.key].kubelet_identity[0].object_id
   role_definition_name = "AcrPull"
   scope                = azurerm_container_registry.acr[each.key].id
 }
 
 resource "azurerm_kubernetes_cluster" "kubernetes_service" {
-  for_each            = var.azure_kubernetes_service
+  for_each            = { for k, v in var.azure_kubernetes_service : k => v if v.aks_create }
   name                = "${each.key}-aks"
   location            = each.value.location
-  resource_group_name = lookup(azurerm_resource_group.resource_group, each.key).name
+  resource_group_name = azurerm_resource_group.resource_group[each.key].name
   dns_prefix          = "akssimple"
 
   default_node_pool {

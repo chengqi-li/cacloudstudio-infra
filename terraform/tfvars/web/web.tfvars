@@ -1,4 +1,4 @@
-keyvault_enabled = true
+keyvault_enabled = false
 
 azure_key_vault = {
   web = {
@@ -71,7 +71,9 @@ aks_enabled = true
 
 azure_kubernetes_service = {
   web = {
-    location = "West US"
+    location   = "West US"
+    aks_create = false
+    acr_create = true
     default_node_pool = {
       name                        = "default"
       node_count                  = 1

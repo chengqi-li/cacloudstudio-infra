@@ -146,3 +146,66 @@ env:
 ## Use Docker to build image
 
 ## Use Helm to deploy kubernetes service
+
+## Use Kubernetes to Deploy Docker Image (Local)
+
+1. First, provision an AKS cluster along with an Azure Container Registry resource.
+
+2. Push docker images unto the ACR resource through Azure CLI.
+
+3. Create a deployment.yaml manifest file. Under containers: block, there will be containers with image: blocks. Place the name of your ACR and address under the image: block, followed by your Docker image name and tag.
+```bash
+image: <name-of-registry>azurecr.io/<image-name>:<tag>
+```
+
+4. Create a service.yaml file, as well as other necessary yaml files (ex: ingress.yaml, hpa.yaml).
+
+5. Use kubectl to apply your yaml manifest files: First, authenticate and configure local kube config.
+```bash
+az aks get-credentials --resource-group <rg-name> --name <aks-cluster-name>
+```
+
+6. Next, apply the manifest yamls.
+```bash
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+kubectl apply -f others.yaml
+```
+
+## Configure ADO Pipeline to Deploy Docker Containers onto AKS
+
+1. Similar to the ADO Pipeline for Terraform, a service connection as well as app registration on the Azure portal side will be needed. Assign the proper permissions to the app registration, such that the ADO pipeline connected to it will be able to access AKS. This can be done by giving the app registration Contributor role in the Subscription scope.
+
+2. The pipeline will use Docker@2 and Kubernetes@1 task to push the docker image into a Container Registry and deploy into AKS. The task Docker@2 requires a Docker Registry service connection, in contrast to the previously used ARM (Azure Resource Manager) service connections. Kubernetes@1 task can use an ARM service connection.
+```bash
+- task: Docker@2
+  inputs:
+    command: buildAndPush
+      containerRegistry: <service-connection-name>
+
+- task: Kubernetes@1
+  displayName: Deploy to AKS
+  inputs:
+    connectionType: "Azure Resource Manager"
+    azureSubscriptionEndpoint: <service-connection-name>
+    azureResourceGroup: <rg-name>
+    kubernetesCluster: <cluster-name>
+```
+As such, the pipeline is connecting to the necessary resources and able to perform tasks such as kubectl apply and push Docker images to ACR.
+
+3. At the top of your pipeline yaml, allow access to the repository containing code for your Docker image as such.
+```bash
+resources:
+  repositories:
+    - repository: web-app
+      type: github
+      name: <organization>/<repo-name>
+      ref: refs
+      endpoint: $(GithubConnection)
+```
+
+4. Lastly, configure the following variables, with $GithubConnection being the name of the service connection used to connect with your organization Github, and $dockerfilePath being the path inside your repo under which the desired Dockerfile resides.
+```bash
+$GithubConnection = "Github Service Connection"
+$dockerfilePath = "src/" # Note: the / is important here.
+```

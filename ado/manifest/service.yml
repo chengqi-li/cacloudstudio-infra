@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: aksapp-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: aksapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
