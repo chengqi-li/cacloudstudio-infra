@@ -113,7 +113,9 @@ variable "aks_enabled" {
 
 variable "azure_kubernetes_service" {
   type = map(object({
-    location = optional(string, "westus")
+    location   = optional(string, "westus")
+    aks_create = optional(bool, true)
+    acr_create = optional(bool, true)
     default_node_pool = object({
       name                        = string
       node_count                  = optional(number, 1)
