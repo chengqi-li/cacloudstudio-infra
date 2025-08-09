@@ -30,7 +30,7 @@ stages:
           - task: Docker@2
             inputs:
               command: buildAndPush
-              containerRegistry: "$(tfPrefix)acr1000"
+              containerRegistry: $(DockerRegistryServiceConnection)
               repository: $(imageName)
               dockerfile: $(Build.SourcesDirectory)/dockerSource/$(dockerfilePath)Dockerfile
               tags: |
