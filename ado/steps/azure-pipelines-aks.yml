@@ -11,7 +11,7 @@ resources:
     - repository: web-app
       type: github
       name: chengqi-li/cacloudstudio-web
-      ref: refs
+      ref: refs/heads/main
       endpoint: chengqi-li
       path: dockerSource
 
