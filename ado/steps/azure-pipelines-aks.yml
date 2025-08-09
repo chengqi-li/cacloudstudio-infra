@@ -32,7 +32,7 @@ stages:
               command: buildAndPush
               containerRegistry: $(DockerRegistryServiceConnection)
               repository: $(imageName)
-              dockerfile: $(Build.SourcesDirectory)/dockerSource/$(dockerfilePath)Dockerfile
+              dockerfile: $(Pipeline.Workspace)/dockerSource/$(dockerfilePath)Dockerfile
               tags: |
                 $(Build.BuildId)
 
