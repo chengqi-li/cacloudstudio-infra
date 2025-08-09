@@ -1,4 +1,3 @@
-# Pending: trigger on update to docker image hosted in separate repo?
 trigger:
   branches:
     include:
