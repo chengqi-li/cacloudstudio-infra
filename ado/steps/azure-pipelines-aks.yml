@@ -12,7 +12,7 @@ resources:
       type: github
       name: chengqi-li/cacloudstudio-web
       ref: refs
-      endpoint: $(GithubConnection)
+      endpoint: chengqi-li
       path: dockerSource
 
 variables:
