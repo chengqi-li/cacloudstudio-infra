@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: frontend-app
-          image: myregistry.azurecr.io/nginx:latest
+          image: webacr1000.azurecr.io/nginx:latest
           ports:
             - containerPort: 80
           resources:
