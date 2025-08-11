@@ -35,6 +35,7 @@ stages:
               dockerfile: $(Pipeline.Workspace)/dockerSource/$(dockerfilePath)Dockerfile
               tags: |
                 $(Build.BuildId)
+                latest
 
   - stage: Deploy
     dependsOn: BuildAndPushImage
