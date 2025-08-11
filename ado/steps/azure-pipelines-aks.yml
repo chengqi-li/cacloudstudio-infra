@@ -52,4 +52,4 @@ stages:
               kubernetesCluster: $(tfPrefix)-aks
               command: apply
               useConfigurationFile: true
-              configuration: "$(Build.SourcesDirectory)/ado/manifest/*.yml"
+              configuration: "$(Build.SourcesDirectory)/ado/manifest/"
